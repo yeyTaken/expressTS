@@ -1,0 +1,8 @@
+{
+  "types": [
+    "error",
+    "success",
+    "api",
+    "client"
+  ]
+}
