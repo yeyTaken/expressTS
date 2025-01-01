@@ -20,6 +20,7 @@
       "@/*": ["./src/*"],
       "@func/*": ["./src/functions/*"],
       "@base/*": ["./src/website/base/*"],
+      "@database": ["./src/database/main.ts"],
     },
     "typeRoots": [
       "../node_modules/@types"
