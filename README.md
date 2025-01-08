@@ -7,7 +7,7 @@ expressTS é uma base que facilita o desenvolvimento de aplicações com Express
 - Suporte para rotas dinâmicas (ex.: `/user/:id`).
 - Integração com views (EJS, Pug, etc.).
 - Configuração simplificada com TypeScript.
-- Suporte para métodos HTTP como GET, POST PUT, DELETE, PATCH e ALL.
+- Suporte para métodos HTTP como GET, POST, PUT, DELETE, PATCH e ALL.
 
 ---
 
