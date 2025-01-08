@@ -1,5 +1,6 @@
-import log from "./funcs/logs/colorFormat";
+import { getUser, createUser } from './funcs/mongoose/users';
 
 export default {
-  log
+  getUser,
+  createUser,
 }

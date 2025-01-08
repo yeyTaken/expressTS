@@ -1,5 +1,17 @@
+/* usar: "document.documentElement.setAttribute('dark', '')" para setar o tema branco no site*/
+:root {
+  --color-text: #e8e8e8;
+  --color-error: #ff6557;
+  --color-success: #2ba820;
+  --color-paper: #2c2c2c;
+  --color-primary: #842184;
+  --color-background: #363636;
+  --color-primary-contrast: #5e205d;
+}
+
+html,
 body {
   font-family: 'Comic Neue', cursive;
-  background-color: #272934;
-  color: whitesmoke;
-};
+  background-color: var(--color-background);
+  color: var(--color-text);
+}

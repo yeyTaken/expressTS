@@ -1,122 +1,147 @@
-# ExpressTS
+# expressTS
 
-Este é um projeto base simples de expressJS em TS.
+expressTS é uma base que facilita o desenvolvimento de aplicações com Express.js usando TypeScript. Ela oferece uma estrutura organizada para rotas, suporte a múltiplos métodos HTTP (GET, POST, DELETE), e automação no carregamento de arquivos.
 
-## Instalação
-
-Para instalar as dependências do projeto, utilize o comando:
-
-```bash
-npm install
-```
-
-## Execução
-
-Para iniciar o servidor em modo de desenvolvimento, execute:
-
-```bash
-npm run start:dev
-```
-
-## Estrutura de Diretórios
-
-A estrutura do código é a seguinte:
-
-```
-src/
-│
-├── functions/
-│   └── funcs/
-│       ├── logs/
-│       │   └── colorFormat.ts
-│       └── funcsMap.ts
-└── index.ts
-tsconfig.json
-package.json
-```
-
-## Paths
-
-No seu `tsconfig.json`, você tem os seguintes caminhos configurados:
-
-- `@/*`: Mapeia para `./src/*`
-- `@/func/*`: Mapeia para `./src/functions/*`
-
-Esses paths permitem a importação mais limpa de módulos dentro do código, como por exemplo:
-
-```typescript
-import func from "@/functions/funcsMap";
-```
-
-## Utilizando o `log`
-
-Para usar o `log`, basta importar a função no arquivo onde você deseja registrar mensagens:
-
-```typescript
-import func from "@/functions/funcsMap";
-
-// Usando o log
-func.log('- Hello, TypeScript!', 'success');
-```
-
-### Tipos de Log
-
-Existem 4 tipos de log disponíveis no projeto:
-
-- `error`: Mensagem de erro (exibe em vermelho com fundo vermelho).
-- `success`: Mensagem de sucesso (exibe em verde com fundo verde).
-- `api`: Mensagem relacionada à API (exibe em ciano com fundo ciano).
-- `client`: Mensagem relacionada ao cliente (exibe em azul com fundo azul).
-
-Exemplo de uso:
-
-```typescript
-func.log('Mensagem de erro', 'error');
-func.log('Mensagem de sucesso', 'success');
-func.log('Mensagem da API', 'api');
-func.log('Mensagem do cliente', 'client');
-```
-
-Se um tipo de log inválido for fornecido, o tipo padrão será `error`.
-
-## Como Funciona
-
-1. **Função `log`**: A função `log` aceita dois parâmetros:
-   - `message`: A mensagem a ser exibida.
-   - `type`: O tipo de log, podendo ser `error`, `success`, `api`, ou `client`.
-
-2. **Formatos de Cor**: A função utiliza o pacote `colors` para formatar a mensagem com diferentes cores e fundos, dependendo do tipo de log.
-
-3. **Estrutura de Funções**: O módulo `funcsMap.ts` faz o mapeamento das funções e as disponibiliza por meio de um único import, como mostrado acima.
-
-## Exemplo Completo
-
-```typescript
-// src/index.ts
-import func from "@/functions/funcsMap";
-
-// Log de sucesso
-func.log('- Hello, TypeScript!', 'success');
-
-// Log de erro
-func.log('Algo deu errado', 'error');
-```
-
-## Configuração do `tsconfig.json`
-
-A configuração de paths no seu `tsconfig.json` permite importar os módulos de forma mais limpa, sem a necessidade de usar caminhos relativos complexos.
-
-```json
-"paths": {
-  "@/*": ["./src/*"],
-  "@/func/*": ["./src/functions/*"]
-}
-```
-
-Isso significa que você pode importar módulos de forma simples, sem precisar usar caminhos relativos, como `../../../`.
+## Funcionalidades
+- Estrutura modular de rotas.
+- Suporte para rotas dinâmicas (ex.: `/user/:id`).
+- Integração com views (EJS, Pug, etc.).
+- Configuração simplificada com TypeScript.
+- Suporte para métodos HTTP como GET, POST e DELETE.
 
 ---
 
-### Licença
+## Instalação
 
-Este projeto está licenciado sob a licença ISC. Consulte o arquivo LICENSE para mais informações.
+1. Clone este repositório:
+   ```bash
+   git clone https://github.com/seu-usuario/expressTS.git
+   cd expressTS
+   ```
+
+2. Instale as dependências:
+   ```bash
+   npm install
+   ```
+
+3. Inicie o servidor:
+   ```bash
+   npm run dev
+   ```
+
+O servidor será iniciado em `http://localhost:3000`.
+
+---
+
+## Criando uma Rota
+
+As rotas são definidas dentro do diretório `src/website/routes`. Cada rota é um arquivo chamado `page.ts`. O caminho da rota é inferido automaticamente com base no local do arquivo.
+
+### Exemplo: Rota Inicial (`/`)
+Crie o arquivo `src/website/routes/page.ts`:
+
+```typescript
+import { Route } from "@/website/base/structure/Route";
+import { Request, Response } from "express";
+
+Route({
+  title: "Página Inicial",
+  description: "Bem-vindo à página inicial!",
+  isAdmin: false,
+  get: async (req: Request, res: Response) => {
+    res.render("pages/home", {
+      title: "Página Inicial",
+      description: "Bem-vindo à página inicial!",
+    });
+  },
+});
+```
+
+### Exemplo: Rota com Caminho Personalizado (`/dashboard`)
+Crie o arquivo `src/website/routes/dashboard/page.ts`:
+
+```typescript
+import { Route } from "@/website/base/structure/Route";
+import { Request, Response } from "express";
+
+Route({
+  title: "Dashboard",
+  description: "Bem-vindo ao dashboard!",
+  isAdmin: true,
+  get: async (req: Request, res: Response) => {
+    res.render("pages/dashboard", {
+      title: "Dashboard",
+      description: "Bem-vindo ao dashboard!",
+    });
+  },
+  delete: async (req: Request, res: Response) => {
+    res.send({ message: "Requisição DELETE no dashboard!" });
+  },
+});
+```
+
+### Exemplo: Rota Dinâmica (`/user/:id`)
+Crie o arquivo `src/website/routes/user/[id]/page.ts`:
+
+```typescript
+import { Route } from "@/website/base/structure/Route";
+import { Request, Response } from "express";
+
+Route({
+  title: "Perfil do Usuário",
+  description: "Veja informações do usuário.",
+  isAdmin: false,
+  get: async (req: Request, res: Response) => {
+    const { id } = req.params;
+    res.render("pages/user", {
+      title: "Perfil do Usuário",
+      description: `Perfil do usuário ${id}`,
+      userId: id,
+    });
+  },
+  post: async (req: Request, res: Response) => {
+    const { id } = req.params;
+    res.send({ message: `Dados atualizados para o usuário ${id}` });
+  },
+});
+```
+
+---
+
+## Como Funcionam os Caminhos
+
+Os caminhos das rotas são inferidos automaticamente com base no local dos arquivos:
+
+- `src/website/routes/page.ts` → `/`
+- `src/website/routes/dashboard/page.ts` → `/dashboard`
+- `src/website/routes/user/[id]/page.ts` → `/user/:id`
+
+### Parâmetros Dinâmicos
+Para criar rotas dinâmicas, use colchetes no nome do diretório ou arquivo. Por exemplo:
+
+- `src/website/routes/user/[id]/page.ts` → `/user/:id`
+- `src/website/routes/product/[category]/[productId]/page.ts` → `/product/:category/:productId`
+
+---
+
+## Carregando as Rotas
+As rotas são carregadas automaticamente com base nos arquivos em `src/website/routes`. Não é necessário importar ou registrar manualmente.
+
+---
+
+## Configure o `.env`
+
+```.env
+# Database Mongoose.
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/
+MONGODB_NAME=my-website
+```
+---
+
+## Contribuição
+Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e enviar pull requests.
+
+---
+
+## Licença
+Este projeto está licenciado sob a [MIT License](LICENSE).

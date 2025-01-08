@@ -1,5 +1,7 @@
 import "dotenv/config";
 import mongoose from "mongoose";
+import chalk from 'chalk';
+
 import { globals } from "@/index";
 
 if (!process.env.MONGODB_URI) {
@@ -8,16 +10,13 @@ if (!process.env.MONGODB_URI) {
 
 mongoose
   .connect(process.env.MONGODB_URI, {
-    dbName: process.env.MONGODB_NAME || 'my-website',
+    dbName: process.env.MONGODB_NAME,
   })
   .then(() =>
-    globals.functions.log(
-      "MongoDB database successfully connected!",
-      'api'
-    )
+    globals.log.success(chalk.hex('#40ca34')(`Connected with: ${chalk.hex('#206ba8').underline('MongoDB')}`))
   )
   .catch((err: any) =>
-    globals.functions.log(`An error occurred while connecting to the database: ${err.message}`)
+    globals.log.error(new Error(`An error occurred while connecting to the database:\n${err.message}`))
   );
 
 const db = mongoose.connection.db;

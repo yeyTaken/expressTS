@@ -19,7 +19,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@func/*": ["./src/functions/*"],
-      "@base/*": ["./src/website/base/*"],
+      "@base": ["./src/website/base/index.ts"],
       "@database": ["./src/database/main.ts"],
     },
     "typeRoots": [

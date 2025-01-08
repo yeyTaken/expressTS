@@ -15,7 +15,7 @@ export default class Database {
   public firebase = firebase;
 }
 
-
+// example:
 (
   async () => {
     // Exemplo de usuário

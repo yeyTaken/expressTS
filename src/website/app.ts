@@ -1,13 +1,14 @@
+import { initializeRoutes } from "@base";
 import express, { Application, Request, Response } from "express";
 import path from "path";
+import chalk from "chalk";
 import fs from "fs";
 
 import { globals } from "@/index";
-import { Route } from '@base/structure/types/Route'
 
 import('dotenv/config');
 var app: Application = express();
-var PORT: number = Number(process.env.PORT) || 3000;
+var PORT: number = Number(process.env.PORT) || 3001;
 
 // Configurações do Express
 app.set("view engine", "ejs"); // Define o EJS como template engine
@@ -26,24 +27,19 @@ var loadRoutes = (dir: string): void => {
       loadRoutes(filePath); // Carrega subdiretórios
     } else if (file.endsWith(".ts") || file.endsWith(".js")) {
       try {
-
-        var routeModule = require(filePath);
-        var route = routeModule.default;
-
-        if (route instanceof Route) {
- 
-           route.run({ app, globals });
-
-          globals.functions.log(`Rota "${route.name}" carregada com sucesso!`, "success");
-        } else {
-          globals.functions.log(`O arquivo ${file} não exporta uma instância válida de Route.`);
-        }
+        require(filePath); // Apenas importa o arquivo para registrar a rota
       } catch (error: any) {
-        globals.functions.log(`Erro ao carregar a rota ${file}: ${error.message}`);
+        globals.log.success(`Erro ao carregar a rota ${file}: ${error.message}`);
       }
     }
   });
 };
+
+// Carregar rotas e inicializá-las
+var routesDir = path.join(__dirname, "routes");
+loadRoutes(routesDir);
+initializeRoutes(app, globals); // Inicializa todas as rotas registradas
+
 
 var routesDir = path.join(__dirname, "routes");
 loadRoutes(routesDir);
@@ -54,5 +50,6 @@ app.get("*", (req: Request, res: Response) => {
 
 // Iniciar servidor
 app.listen(PORT, () => {
-  globals.functions.log(`Servidor rodando em http://localhost:${PORT}`, 'client')
+  console.log();
+  globals.log.success(chalk.hex('#40ca34')(`Local: ${chalk.hex('#206ba8').underline(`http://localhost:${PORT}`)}`))
 });
