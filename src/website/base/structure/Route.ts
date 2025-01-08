@@ -3,17 +3,22 @@ import chalk from 'chalk';
 import path from "path";
 import fs from "fs";
 
-interface RouteProps {
-  title: string;
-  description: string;
-  isAdmin: boolean;
-  
+import { globals } from "@/index";
+
+interface RouteHandlers {
   get?: RequestHandler;
   post?: RequestHandler;
   put?: RequestHandler;
   delete?: RequestHandler;
   patch?: RequestHandler;
   all?: RequestHandler;
+}
+
+interface RouteProps {
+  title: string;
+  description: string;
+  isAdmin: boolean;
+  route: (props: { globals: typeof globals, database: typeof globals.database, functions: typeof globals.functions }) => RouteHandlers;
 }
 
 const routeRegistry: { path: string; route: RouteProps }[] = [];
@@ -28,15 +33,16 @@ export function Route(props: RouteProps) {
 // Inicializa as rotas no Express
 export function initializeRoutes(app: Application, globals: any) {
   routeRegistry.forEach(({ path, route }) => {
-    if (route.get) app.get(path, route.get);
-    if (route.post) app.post(path, route.post);
-    if (route.put) app.put(path, route.put);
-    if (route.delete) app.delete(path, route.delete);
-    if (route.patch) app.patch(path, route.patch);
-    if (route.all) app.all(path, route.all);
+    const handlers = route.route({ globals, database: globals.database, functions: globals.functions });
+
+    if (handlers.get) app.get(path, handlers.get);
+    if (handlers.post) app.post(path, handlers.post);
+    if (handlers.put) app.put(path, handlers.put);
+    if (handlers.delete) app.delete(path, handlers.delete);
+    if (handlers.patch) app.patch(path, handlers.patch);
+    if (handlers.all) app.all(path, handlers.all);
 
     console.log(chalk.hex('#40ca34')(`{/} ${chalk.hex('#206ba8').underline(path)} route loaded!`));
-  
   });
 }
 

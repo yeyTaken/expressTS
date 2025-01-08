@@ -27,7 +27,7 @@ export async function createUser(
 (
   async () => {
 
-    var {id, account: { extendName, email, password } } = {
+    var { id, account: { extendName, email, password } } = {
       id: '@raabi',
       account: {
         extendName: 'Israel Rabbi',
@@ -35,7 +35,7 @@ export async function createUser(
         password: 'Teste@123'
       }
     }
-    
+
     let userDb = await globals.functions.getUser(id);
     if (!userDb) {
       userDb = await globals.functions.createUser(id, extendName, email, password)
